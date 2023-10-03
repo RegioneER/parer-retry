@@ -19,6 +19,13 @@
         <version>4.2.0</version>
     </parent>
 
+    <distributionManagement>
+      <repository>
+	   <id>github</id>
+	   <url>https://maven.pkg.github.com/RegioneER/parer-retry</url>
+	 </repository>      
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>github</id>
