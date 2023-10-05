@@ -2,10 +2,6 @@ name: Maven Release
 on:
   workflow_dispatch:
     inputs:
-      pat:
-        description: "Personal access token"
-        required: true
-        type: string       
       version:
         description: "Version number"
         required: true
@@ -15,5 +11,4 @@ jobs:
     uses: RegioneER/parer-github-template/.github/workflows/release.yml@v1
     with:
       version: ${{ inputs.version }}
-      pat: ${{ inputs.pat }}
       java: '8'
