@@ -145,11 +145,6 @@ public class RestRetryInterceptor implements ClientHttpRequestInterceptor {
         }
 
         @Override
-        public HttpMethod getMethod() {
-            return hr.getMethod();
-        }
-
-        @Override
         public URI getURI() {
             return newUri;
         }
@@ -157,6 +152,11 @@ public class RestRetryInterceptor implements ClientHttpRequestInterceptor {
         @Override
         public HttpHeaders getHeaders() {
             return hr.getHeaders();
+        }
+
+        @Override
+        public String getMethodValue() {
+            return hr.getMethodValue();
         }
     }
 
