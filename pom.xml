@@ -12,7 +12,6 @@
     </properties>
     <name>parer-retry</name>
     <description>Libreria utilizzata per effettuare chiamate http configurando meccanismi di retry secondo alcune policy configurate</description>
-    <url>https://nexus.ente.regione.emr.it/repository/parer-site/parer-retry/${project.version}/</url>
     
     <parent>
         <groupId>it.eng.parer</groupId>
@@ -21,11 +20,18 @@
     </parent>
 
     <distributionManagement>
-        <site>
-            <id>site</id>
-            <url>dav:https://nexus.ente.regione.emr.it/repository/parer-site/parer-retry/${project.version}</url>
-        </site>
+      <repository>
+	   <id>github</id>
+	   <url>https://maven.pkg.github.com/RegioneER/parer-retry</url>
+	 </repository>      
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/RegioneER/parer-framework-parerpom</url>            
+        </repository>        	            
+	</repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -79,7 +85,7 @@
         </dependency>
     </dependencies>
     <scm>
-        <developerConnection>scm:git:git@gitlab.ente.regione.emr.it:parer/lib/parer-retry.git</developerConnection>
-        <tag>parer-retry-2.2.0</tag>
+        <developerConnection>scm:git:https://github.com/RegioneER/parer-retry.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
 </project>
