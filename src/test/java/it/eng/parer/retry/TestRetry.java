@@ -17,15 +17,18 @@
 
 package it.eng.parer.retry;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -58,7 +61,7 @@ public class TestRetry {
 
     private String preferredEndpoint;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
         BAD_ENDPOINTS.add(URI.create(CRYPTO_LOCALE));
         BAD_ENDPOINTS.add(URI.create("Br0kenUr1"));
@@ -68,11 +71,11 @@ public class TestRetry {
         BAD_ENDPOINTS.add(URI.create("../../"));
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         restTemplate = new RestTemplate();
 
@@ -85,12 +88,12 @@ public class TestRetry {
         preferredEndpoint = CRYPTO_TEST_OKD;
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
     @Test
-    public void testTST() {
+    void testTST() {
         log.info("Test configurazione predefinita");
         HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
 
@@ -101,32 +104,34 @@ public class TestRetry {
         restTemplate.getInterceptors().add(new RestRetryInterceptor(BAD_ENDPOINTS, retryClient));
 
         String parerTST = restTemplate.postForObject(endpoint, requestEntity, String.class);
-        Assert.assertNotNull(parerTST);
+        assertNotNull(parerTST);
     }
 
-    @Test(expected = RestClientException.class)
-    public void testTSTWithNoValidURL() {
+    @Test
+    void testTSTWithNoValidURL() {
 
         log.info("Test senza URL raggiungibili");
         HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
 
-        String preferredEndpoint = "http://localhost:8090/api/tst";
+        String endpoint = "http://localhost:8090/api/tst";
 
         ParerRetryConfiguration retryClient = ParerRetryConfiguration.defaultInstance();
         restTemplate.getInterceptors().removeIf(i -> true);
         restTemplate.getInterceptors().add(new RestRetryInterceptor(BAD_ENDPOINTS, retryClient));
 
-        restTemplate.postForObject(preferredEndpoint, requestEntity, Object.class);
+        assertThrows(RestClientException.class,
+                () -> restTemplate.postForObject(endpoint, requestEntity, Object.class));
+
     }
 
     @Test
-    public void testTSTWithSomeBadURI() {
+    void testTSTWithSomeBadURI() {
 
         log.info("Test con alcune URL raggiungibili");
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
 
-        String preferredEndpoint = "http://localhost:8090/api/tst";
+        String endpoint = "http://localhost:8090/api/tst";
 
         // Endpoint errati
         List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
@@ -137,19 +142,19 @@ public class TestRetry {
         restTemplate.getInterceptors().removeIf(i -> true);
         restTemplate.getInterceptors().add(new RestRetryInterceptor(endPoints, retryClient));
 
-        String parerTST = restTemplate.postForObject(preferredEndpoint, requestEntity, String.class);
-        Assert.assertNotNull(parerTST);
+        String parerTST = restTemplate.postForObject(endpoint, requestEntity, String.class);
+        assertNotNull(parerTST);
 
     }
 
-    @Test(expected = Exception.class)
-    public void testTSTWitoutMandatoryParameter() {
+    @Test
+    void testTSTWitoutMandatoryParameter() {
 
         log.info("Test senza parametro obbligatorio");
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = buildInvalidRequestEntity();
 
-        String preferredEndpoint = "http://localhost:8090/api/tst";
+        String endpoint = "http://localhost:8090/api/tst";
 
         // Endpoint errati
         List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
@@ -161,8 +166,7 @@ public class TestRetry {
         restTemplate.getInterceptors().removeIf(i -> true);
         restTemplate.getInterceptors().add(new RestRetryInterceptor(endPoints, retryClient));
 
-        String parerTST = restTemplate.postForObject(preferredEndpoint, requestEntity, String.class);
-        Assert.assertNotNull(parerTST);
+        assertThrows(Exception.class, () -> restTemplate.postForObject(endpoint, requestEntity, String.class));
     }
 
     /**
@@ -170,12 +174,12 @@ public class TestRetry {
      *
      */
     @Test
-    public void testOptimisticParameter() {
+    void testOptimisticParameter() {
 
         log.info("Test con policy composita e logica ottimistica");
         HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
 
-        String preferredEndpoint = "http://localhost:8090/api/tst";
+        String endpoint = "http://localhost:8090/api/tst";
 
         // Endpoint errati
         List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
@@ -188,20 +192,20 @@ public class TestRetry {
         restTemplate.getInterceptors().removeIf(i -> true);
         restTemplate.getInterceptors().add(new RestRetryInterceptor(endPoints, retryClientConfiguration));
 
-        String parerTST = restTemplate.postForObject(preferredEndpoint, requestEntity, String.class);
-        Assert.assertNotNull(parerTST);
+        String parerTST = restTemplate.postForObject(endpoint, requestEntity, String.class);
+        assertNotNull(parerTST);
     }
 
     /**
      * Test policy composita con logica "pessimistica": timeout molto piccolo e molte retry. Effettuerà solo la prima.
      *
      */
-    @Test(expected = RestClientException.class)
-    public void testPessimisticParameter() {
+    @Test
+    void testPessimisticParameter() {
         log.info("Test con policy composita e logica pessimistica");
         HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
 
-        String preferredEndpoint = "http://localhost:8090/api/tst";
+        String endpoint = "http://localhost:8090/api/tst";
 
         // Endpoint errati
         List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
@@ -214,8 +218,8 @@ public class TestRetry {
         restTemplate.getInterceptors().removeIf(i -> true);
         restTemplate.getInterceptors().add(new RestRetryInterceptor(endPoints, retryClientConfiguration));
 
-        String parerTST = restTemplate.postForObject(preferredEndpoint, requestEntity, String.class);
-        Assert.assertNotNull(parerTST);
+        assertThrows(RestClientException.class,
+                () -> restTemplate.postForObject(endpoint, requestEntity, String.class));
     }
 
     private HttpEntity<MultiValueMap<String, Object>> buildValidRequestEntity() {

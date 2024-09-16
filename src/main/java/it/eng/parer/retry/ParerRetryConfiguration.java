@@ -63,7 +63,7 @@ public class ParerRetryConfiguration {
      *            callback, ovvero metodo che deve essere eseguito
      * @param fallback
      *            fallback, ovvero metodo che deve essere eseguito in caso falliscano tutti i tentativi di re-invio
-     * 
+     *
      * @return Risultato atteso
      *
      * @throws E
@@ -82,7 +82,7 @@ public class ParerRetryConfiguration {
      *            Eccezione per cui si effettua il retry
      * @param metodo
      *            callback, ovvero metodo che deve essere eseguito
-     * 
+     *
      * @return Risultato atteso
      *
      * @throws E

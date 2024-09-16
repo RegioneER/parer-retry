@@ -48,7 +48,7 @@ public class ParerRetryConfigurationBuilder {
      *
      * @param timeout
      *            in ms
-     * 
+     *
      * @return {@link ParerRetryConfigurationBuilder}
      */
     public ParerRetryConfigurationBuilder withTimeout(long timeout) {
@@ -64,7 +64,7 @@ public class ParerRetryConfigurationBuilder {
      *
      * @param maxAttemps
      *            numero massimo di tentativi
-     * 
+     *
      * @return {@link ParerRetryConfigurationBuilder}
      */
     public ParerRetryConfigurationBuilder withMaxAttemps(int maxAttemps) {
@@ -79,7 +79,7 @@ public class ParerRetryConfigurationBuilder {
      *
      * @param backOffPeriod
      *            espresso in ms
-     * 
+     *
      * @return {@link ParerRetryConfigurationBuilder}
      */
     public ParerRetryConfigurationBuilder withBackoffPeriod(long backOffPeriod) {
@@ -96,7 +96,7 @@ public class ParerRetryConfigurationBuilder {
      *            timeout di apertura
      * @param resetTimeout
      *            timeout di reset
-     * 
+     *
      * @return {@link ParerRetryConfigurationBuilder}
      */
     public ParerRetryConfigurationBuilder withCircuitBreaker(long openTimeout, long resetTimeout) {
@@ -110,7 +110,7 @@ public class ParerRetryConfigurationBuilder {
      *
      * @param compositePolicy
      *            valore da assegnare alla logica di valutazione delle policy composite
-     * 
+     *
      * @return {@link ParerRetryConfigurationBuilder}
      */
     public ParerRetryConfigurationBuilder withOptimisticCompositePolicy(boolean compositePolicy) {
