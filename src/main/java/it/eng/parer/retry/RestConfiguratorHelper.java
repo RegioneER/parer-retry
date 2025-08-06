@@ -1,18 +1,14 @@
 /*
  * Engineering Ingegneria Informatica S.p.A.
  *
- * Copyright (C) 2023 Regione Emilia-Romagna
- * <p/>
- * This program is free software: you can redistribute it and/or modify it under the terms of
- * the GNU Affero General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU Affero General Public License along with this program.
- * If not, see <https://www.gnu.org/licenses/>.
+ * Copyright (C) 2023 Regione Emilia-Romagna <p/> This program is free software: you can
+ * redistribute it and/or modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version. <p/> This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Affero General Public License for more details. <p/> You should
+ * have received a copy of the GNU Affero General Public License along with this program. If not,
+ * see <https://www.gnu.org/licenses/>.
  */
 
 package it.eng.parer.retry;
@@ -33,27 +29,28 @@ public interface RestConfiguratorHelper {
      * @return il numero di ms indicanti il timeout.
      */
     default int clientTimeout() {
-        final int fiveMinutes = 300_000;
+	final int fiveMinutes = 300_000;
 
-        Long clientTimeoutInMinutesParam = getClientTimeoutInMinutesParam();
-        if (clientTimeoutInMinutesParam == null) {
-            return fiveMinutes;
-        }
-        long toMillis = TimeUnit.MINUTES.toMillis(clientTimeoutInMinutesParam);
+	Long clientTimeoutInMinutesParam = getClientTimeoutInMinutesParam();
+	if (clientTimeoutInMinutesParam == null) {
+	    return fiveMinutes;
+	}
+	long toMillis = TimeUnit.MINUTES.toMillis(clientTimeoutInMinutesParam);
 
-        final int timeoutInMillis;
-        if (toMillis < 0 || toMillis > Integer.MAX_VALUE) {
-            // default 5 minuti
-            timeoutInMillis = fiveMinutes;
-        } else {
-            timeoutInMillis = (int) toMillis;
-        }
+	final int timeoutInMillis;
+	if (toMillis < 0 || toMillis > Integer.MAX_VALUE) {
+	    // default 5 minuti
+	    timeoutInMillis = fiveMinutes;
+	} else {
+	    timeoutInMillis = (int) toMillis;
+	}
 
-        return timeoutInMillis;
+	return timeoutInMillis;
     }
 
     /**
-     * Lista degli endpoint per i servizi REST. Tendenzialmente questa verrà trattata come una lista circolare.
+     * Lista degli endpoint per i servizi REST. Tendenzialmente questa verrà trattata come una lista
+     * circolare.
      *
      * @return lista di endpoint
      */
@@ -66,25 +63,27 @@ public interface RestConfiguratorHelper {
      */
     default ParerRetryConfiguration retryClient() {
 
-        ParerRetryConfigurationBuilder retryBuilder = ParerRetryConfiguration.builder();
+	ParerRetryConfigurationBuilder retryBuilder = ParerRetryConfiguration.builder();
 
-        if (getMaxRetryParam() != null) {
-            retryBuilder.withMaxAttemps(getMaxRetryParam());
-        }
-        if (getRetryTimeoutParam() != null) {
-            retryBuilder.withTimeout(getRetryTimeoutParam());
-        }
-        if (getCircuitBreakerOpenTimeoutParam() != null && getCircuitBreakerResetTimeoutParam() != null) {
-            retryBuilder.withCircuitBreaker(getCircuitBreakerOpenTimeoutParam(), getCircuitBreakerResetTimeoutParam());
-        }
-        if (getPeriodoBackOffParam() != null) {
-            retryBuilder.withBackoffPeriod(getPeriodoBackOffParam());
-        }
-        if (isCompositePolicyOptimisticParam() != null) {
-            retryBuilder.withOptimisticCompositePolicy(isCompositePolicyOptimisticParam());
-        }
+	if (getMaxRetryParam() != null) {
+	    retryBuilder.withMaxAttemps(getMaxRetryParam());
+	}
+	if (getRetryTimeoutParam() != null) {
+	    retryBuilder.withTimeout(getRetryTimeoutParam());
+	}
+	if (getCircuitBreakerOpenTimeoutParam() != null
+		&& getCircuitBreakerResetTimeoutParam() != null) {
+	    retryBuilder.withCircuitBreaker(getCircuitBreakerOpenTimeoutParam(),
+		    getCircuitBreakerResetTimeoutParam());
+	}
+	if (getPeriodoBackOffParam() != null) {
+	    retryBuilder.withBackoffPeriod(getPeriodoBackOffParam());
+	}
+	if (isCompositePolicyOptimisticParam() != null) {
+	    retryBuilder.withOptimisticCompositePolicy(isCompositePolicyOptimisticParam());
+	}
 
-        return retryBuilder.build();
+	return retryBuilder.build();
     }
 
     /**
@@ -106,8 +105,10 @@ public interface RestConfiguratorHelper {
     /**
      * Indica, quando sono indicate più policy di retry, se utilizzare una politica di tipo:
      * <ul>
-     * <li><strong>pessimistico</strong> se almeno una policy non è valida allora non effettuo più retry</li>
-     * <li><strong>ottimistico</strong> se almeno una policy è valida allora effettuo ancora retry</li>
+     * <li><strong>pessimistico</strong> se almeno una policy non è valida allora non effettuo più
+     * retry</li>
+     * <li><strong>ottimistico</strong> se almeno una policy è valida allora effettuo ancora
+     * retry</li>
      * </ul>
      *
      * Il parametro è opzionale. Il suo valore predefinito è <em>true</em>
@@ -117,8 +118,8 @@ public interface RestConfiguratorHelper {
     Boolean isCompositePolicyOptimisticParam();
 
     /**
-     * Timeout della fase di "Open" del circuit breaker. Il parametro è opzionale e viene valutato solo se è presente
-     * anche {@link #getCircuitBreakerResetTimeoutParam()}
+     * Timeout della fase di "Open" del circuit breaker. Il parametro è opzionale e viene valutato
+     * solo se è presente anche {@link #getCircuitBreakerResetTimeoutParam()}
      *
      *
      * @return timeout in ms oppure null
@@ -126,16 +127,16 @@ public interface RestConfiguratorHelper {
     Long getCircuitBreakerOpenTimeoutParam();
 
     /**
-     * Timeout della fase di "Reset" del circuit breaker. Il parametro è opzionale e viene valutato solo se è presente
-     * anche {@link #getCircuitBreakerOpenTimeoutParam()}
+     * Timeout della fase di "Reset" del circuit breaker. Il parametro è opzionale e viene valutato
+     * solo se è presente anche {@link #getCircuitBreakerOpenTimeoutParam()}
      *
      * @return timeout in ms oppure null
      */
     Long getCircuitBreakerResetTimeoutParam();
 
     /**
-     * Periodo di backoff (periodo di tempo in cui non verranno effettuate chiamate sulla rete). Il parametro è
-     * opzionale.
+     * Periodo di backoff (periodo di tempo in cui non verranno effettuate chiamate sulla rete). Il
+     * parametro è opzionale.
      *
      * @return periodo di backoff in ms oppure null
      */
