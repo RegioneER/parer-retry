@@ -33,7 +33,7 @@ public class ParerRetryConfiguration {
      * @return oggetto deputato alla costruzione del meccanismo di retry.
      */
     public static ParerRetryConfigurationBuilder builder() {
-	return new ParerRetryConfigurationBuilder();
+        return new ParerRetryConfigurationBuilder();
     }
 
     /**
@@ -42,11 +42,11 @@ public class ParerRetryConfiguration {
      * @return Client predefinito.
      */
     public static ParerRetryConfiguration defaultInstance() {
-	return new ParerRetryConfigurationBuilder().build();
+        return new ParerRetryConfigurationBuilder().build();
     }
 
     protected void setRetryTemplate(RetryTemplate retryTemplate) {
-	this.retryTemplate = retryTemplate;
+        this.retryTemplate = retryTemplate;
     }
 
     /**
@@ -63,8 +63,8 @@ public class ParerRetryConfiguration {
      * @throws E eccezione che innesca (possibilmente) una successiva esecuzione.
      */
     public <R, E extends Throwable> R execute(RetryCallback<R, E> metodo,
-	    RecoveryCallback<R> fallback) throws E {
-	return retryTemplate.execute(metodo, fallback);
+            RecoveryCallback<R> fallback) throws E {
+        return retryTemplate.execute(metodo, fallback);
     }
 
     /**
@@ -79,7 +79,7 @@ public class ParerRetryConfiguration {
      * @throws E eccezione che innesca (possibilmente) una successiva esecuzione.
      */
     public <R, E extends Throwable> R execute(RetryCallback<R, E> metodo) throws E {
-	return retryTemplate.execute(metodo);
+        return retryTemplate.execute(metodo);
     }
 
 }

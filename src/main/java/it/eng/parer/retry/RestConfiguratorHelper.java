@@ -29,23 +29,23 @@ public interface RestConfiguratorHelper {
      * @return il numero di ms indicanti il timeout.
      */
     default int clientTimeout() {
-	final int fiveMinutes = 300_000;
+        final int fiveMinutes = 300_000;
 
-	Long clientTimeoutInMinutesParam = getClientTimeoutInMinutesParam();
-	if (clientTimeoutInMinutesParam == null) {
-	    return fiveMinutes;
-	}
-	long toMillis = TimeUnit.MINUTES.toMillis(clientTimeoutInMinutesParam);
+        Long clientTimeoutInMinutesParam = getClientTimeoutInMinutesParam();
+        if (clientTimeoutInMinutesParam == null) {
+            return fiveMinutes;
+        }
+        long toMillis = TimeUnit.MINUTES.toMillis(clientTimeoutInMinutesParam);
 
-	final int timeoutInMillis;
-	if (toMillis < 0 || toMillis > Integer.MAX_VALUE) {
-	    // default 5 minuti
-	    timeoutInMillis = fiveMinutes;
-	} else {
-	    timeoutInMillis = (int) toMillis;
-	}
+        final int timeoutInMillis;
+        if (toMillis < 0 || toMillis > Integer.MAX_VALUE) {
+            // default 5 minuti
+            timeoutInMillis = fiveMinutes;
+        } else {
+            timeoutInMillis = (int) toMillis;
+        }
 
-	return timeoutInMillis;
+        return timeoutInMillis;
     }
 
     /**
@@ -63,27 +63,27 @@ public interface RestConfiguratorHelper {
      */
     default ParerRetryConfiguration retryClient() {
 
-	ParerRetryConfigurationBuilder retryBuilder = ParerRetryConfiguration.builder();
+        ParerRetryConfigurationBuilder retryBuilder = ParerRetryConfiguration.builder();
 
-	if (getMaxRetryParam() != null) {
-	    retryBuilder.withMaxAttemps(getMaxRetryParam());
-	}
-	if (getRetryTimeoutParam() != null) {
-	    retryBuilder.withTimeout(getRetryTimeoutParam());
-	}
-	if (getCircuitBreakerOpenTimeoutParam() != null
-		&& getCircuitBreakerResetTimeoutParam() != null) {
-	    retryBuilder.withCircuitBreaker(getCircuitBreakerOpenTimeoutParam(),
-		    getCircuitBreakerResetTimeoutParam());
-	}
-	if (getPeriodoBackOffParam() != null) {
-	    retryBuilder.withBackoffPeriod(getPeriodoBackOffParam());
-	}
-	if (isCompositePolicyOptimisticParam() != null) {
-	    retryBuilder.withOptimisticCompositePolicy(isCompositePolicyOptimisticParam());
-	}
+        if (getMaxRetryParam() != null) {
+            retryBuilder.withMaxAttemps(getMaxRetryParam());
+        }
+        if (getRetryTimeoutParam() != null) {
+            retryBuilder.withTimeout(getRetryTimeoutParam());
+        }
+        if (getCircuitBreakerOpenTimeoutParam() != null
+                && getCircuitBreakerResetTimeoutParam() != null) {
+            retryBuilder.withCircuitBreaker(getCircuitBreakerOpenTimeoutParam(),
+                    getCircuitBreakerResetTimeoutParam());
+        }
+        if (getPeriodoBackOffParam() != null) {
+            retryBuilder.withBackoffPeriod(getPeriodoBackOffParam());
+        }
+        if (isCompositePolicyOptimisticParam() != null) {
+            retryBuilder.withOptimisticCompositePolicy(isCompositePolicyOptimisticParam());
+        }
 
-	return retryBuilder.build();
+        return retryBuilder.build();
     }
 
     /**
