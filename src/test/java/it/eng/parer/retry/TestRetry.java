@@ -48,7 +48,7 @@ import org.springframework.web.client.RestTemplate;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
-	TestConfig.class })
+        TestConfig.class })
 class TestRetry {
 
     private final Logger log = LoggerFactory.getLogger(TestRetry.class);
@@ -72,103 +72,103 @@ class TestRetry {
 
     @BeforeAll
     void setUpClass() {
-	BAD_ENDPOINTS.add(URI.create(cryptoLocalEndpoint));
-	BAD_ENDPOINTS.add(URI.create("Br0kenUr1"));
-	BAD_ENDPOINTS.add(URI.create("http://localhost:8092/"));
-	BAD_ENDPOINTS.add(URI.create("http://localhost:8093/"));
-	BAD_ENDPOINTS.add(URI.create("//////////"));
-	BAD_ENDPOINTS.add(URI.create("../../"));
+        BAD_ENDPOINTS.add(URI.create(cryptoLocalEndpoint));
+        BAD_ENDPOINTS.add(URI.create("Br0kenUr1"));
+        BAD_ENDPOINTS.add(URI.create("http://localhost:8092/"));
+        BAD_ENDPOINTS.add(URI.create("http://localhost:8093/"));
+        BAD_ENDPOINTS.add(URI.create("//////////"));
+        BAD_ENDPOINTS.add(URI.create("../../"));
     }
 
     @BeforeEach
     void setUp() {
-	restTemplate = new RestTemplate();
+        restTemplate = new RestTemplate();
 
-	HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-	clientHttpRequestFactory.setReadTimeout(TIMEOUT);
-	clientHttpRequestFactory.setConnectTimeout(TIMEOUT);
+        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        clientHttpRequestFactory.setReadTimeout(TIMEOUT);
+        clientHttpRequestFactory.setConnectTimeout(TIMEOUT);
 
-	restTemplate.setRequestFactory(clientHttpRequestFactory);
+        restTemplate.setRequestFactory(clientHttpRequestFactory);
 
-	preferredEndpoint = cryptoTestEndpoint;
+        preferredEndpoint = cryptoTestEndpoint;
     }
 
     @Test
     void testTST() {
-	log.info("Test configurazione predefinita");
-	HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
+        log.info("Test configurazione predefinita");
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
 
-	String endpoint = preferredEndpoint + "api/tst";
+        String endpoint = preferredEndpoint + "api/tst";
 
-	ParerRetryConfiguration retryClient = ParerRetryConfiguration.defaultInstance();
-	restTemplate.getInterceptors().removeIf(i -> true);
-	restTemplate.getInterceptors().add(new RestRetryInterceptor(BAD_ENDPOINTS, retryClient));
+        ParerRetryConfiguration retryClient = ParerRetryConfiguration.defaultInstance();
+        restTemplate.getInterceptors().removeIf(i -> true);
+        restTemplate.getInterceptors().add(new RestRetryInterceptor(BAD_ENDPOINTS, retryClient));
 
-	String parerTST = restTemplate.postForObject(endpoint, requestEntity, String.class);
-	assertNotNull(parerTST);
+        String parerTST = restTemplate.postForObject(endpoint, requestEntity, String.class);
+        assertNotNull(parerTST);
     }
 
     @Test
     void testTSTWithNoValidURL() {
 
-	log.info("Test senza URL raggiungibili");
-	HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
+        log.info("Test senza URL raggiungibili");
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
 
-	String endpoint = "http://localhost:8090/api/tst";
+        String endpoint = "http://localhost:8090/api/tst";
 
-	ParerRetryConfiguration retryClient = ParerRetryConfiguration.defaultInstance();
-	restTemplate.getInterceptors().removeIf(i -> true);
-	restTemplate.getInterceptors().add(new RestRetryInterceptor(BAD_ENDPOINTS, retryClient));
+        ParerRetryConfiguration retryClient = ParerRetryConfiguration.defaultInstance();
+        restTemplate.getInterceptors().removeIf(i -> true);
+        restTemplate.getInterceptors().add(new RestRetryInterceptor(BAD_ENDPOINTS, retryClient));
 
-	assertThrows(RestClientException.class,
-		() -> restTemplate.postForObject(endpoint, requestEntity, Object.class));
+        assertThrows(RestClientException.class,
+                () -> restTemplate.postForObject(endpoint, requestEntity, Object.class));
 
     }
 
     @Test
     void testTSTWithSomeBadURI() {
 
-	log.info("Test con alcune URL raggiungibili");
+        log.info("Test con alcune URL raggiungibili");
 
-	HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
 
-	String endpoint = "http://localhost:8090/api/tst";
+        String endpoint = "http://localhost:8090/api/tst";
 
-	// Endpoint errati
-	List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
-	// Aggiungo endpoint "buono
-	endPoints.add(URI.create(cryptoSnapEndpoint));
+        // Endpoint errati
+        List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
+        // Aggiungo endpoint "buono
+        endPoints.add(URI.create(cryptoSnapEndpoint));
 
-	ParerRetryConfiguration retryClient = ParerRetryConfiguration.defaultInstance();
-	restTemplate.getInterceptors().removeIf(i -> true);
-	restTemplate.getInterceptors().add(new RestRetryInterceptor(endPoints, retryClient));
+        ParerRetryConfiguration retryClient = ParerRetryConfiguration.defaultInstance();
+        restTemplate.getInterceptors().removeIf(i -> true);
+        restTemplate.getInterceptors().add(new RestRetryInterceptor(endPoints, retryClient));
 
-	String parerTST = restTemplate.postForObject(endpoint, requestEntity, String.class);
-	assertNotNull(parerTST);
+        String parerTST = restTemplate.postForObject(endpoint, requestEntity, String.class);
+        assertNotNull(parerTST);
 
     }
 
     @Test
     void testTSTWitoutMandatoryParameter() {
 
-	log.info("Test senza parametro obbligatorio");
+        log.info("Test senza parametro obbligatorio");
 
-	HttpEntity<MultiValueMap<String, Object>> requestEntity = buildInvalidRequestEntity();
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = buildInvalidRequestEntity();
 
-	String endpoint = "http://localhost:8090/api/tst";
+        String endpoint = "http://localhost:8090/api/tst";
 
-	// Endpoint errati
-	List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
-	// Aggiungo endpoint "buono
-	endPoints.add(URI.create(cryptoSnapEndpoint));
+        // Endpoint errati
+        List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
+        // Aggiungo endpoint "buono
+        endPoints.add(URI.create(cryptoSnapEndpoint));
 
-	ParerRetryConfiguration retryClient = ParerRetryConfiguration.defaultInstance();
+        ParerRetryConfiguration retryClient = ParerRetryConfiguration.defaultInstance();
 
-	restTemplate.getInterceptors().removeIf(i -> true);
-	restTemplate.getInterceptors().add(new RestRetryInterceptor(endPoints, retryClient));
+        restTemplate.getInterceptors().removeIf(i -> true);
+        restTemplate.getInterceptors().add(new RestRetryInterceptor(endPoints, retryClient));
 
-	assertThrows(Exception.class,
-		() -> restTemplate.postForObject(endpoint, requestEntity, String.class));
+        assertThrows(Exception.class,
+                () -> restTemplate.postForObject(endpoint, requestEntity, String.class));
     }
 
     /**
@@ -179,25 +179,25 @@ class TestRetry {
     @Test
     void testOptimisticParameter() {
 
-	log.info("Test con policy composita e logica ottimistica");
-	HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
+        log.info("Test con policy composita e logica ottimistica");
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
 
-	String endpoint = "http://localhost:8090/api/tst";
+        String endpoint = "http://localhost:8090/api/tst";
 
-	// Endpoint errati
-	List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
-	// Aggiungo endpoint "buono
-	endPoints.add(URI.create(cryptoSnapEndpoint));
+        // Endpoint errati
+        List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
+        // Aggiungo endpoint "buono
+        endPoints.add(URI.create(cryptoSnapEndpoint));
 
-	ParerRetryConfiguration retryClientConfiguration = new ParerRetryConfigurationBuilder()
-		.withMaxAttemps(10).withOptimisticCompositePolicy(true).withTimeout(1L).build();
+        ParerRetryConfiguration retryClientConfiguration = new ParerRetryConfigurationBuilder()
+                .withMaxAttemps(10).withOptimisticCompositePolicy(true).withTimeout(1L).build();
 
-	restTemplate.getInterceptors().removeIf(i -> true);
-	restTemplate.getInterceptors()
-		.add(new RestRetryInterceptor(endPoints, retryClientConfiguration));
+        restTemplate.getInterceptors().removeIf(i -> true);
+        restTemplate.getInterceptors()
+                .add(new RestRetryInterceptor(endPoints, retryClientConfiguration));
 
-	String parerTST = restTemplate.postForObject(endpoint, requestEntity, String.class);
-	assertNotNull(parerTST);
+        String parerTST = restTemplate.postForObject(endpoint, requestEntity, String.class);
+        assertNotNull(parerTST);
     }
 
     /**
@@ -207,63 +207,63 @@ class TestRetry {
      */
     @Test
     void testPessimisticParameter() {
-	log.info("Test con policy composita e logica pessimistica");
-	HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
+        log.info("Test con policy composita e logica pessimistica");
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = buildValidRequestEntity();
 
-	String endpoint = "http://localhost:8090/api/tst";
+        String endpoint = "http://localhost:8090/api/tst";
 
-	// Endpoint errati
-	List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
-	// Aggiungo endpoint "buono
-	endPoints.add(URI.create(cryptoSnapEndpoint));
+        // Endpoint errati
+        List<URI> endPoints = new ArrayList<>(BAD_ENDPOINTS);
+        // Aggiungo endpoint "buono
+        endPoints.add(URI.create(cryptoSnapEndpoint));
 
-	ParerRetryConfiguration retryClientConfiguration = new ParerRetryConfigurationBuilder()
-		.withMaxAttemps(10).withOptimisticCompositePolicy(false).withTimeout(1L).build();
+        ParerRetryConfiguration retryClientConfiguration = new ParerRetryConfigurationBuilder()
+                .withMaxAttemps(10).withOptimisticCompositePolicy(false).withTimeout(1L).build();
 
-	restTemplate.getInterceptors().removeIf(i -> true);
-	restTemplate.getInterceptors()
-		.add(new RestRetryInterceptor(endPoints, retryClientConfiguration));
+        restTemplate.getInterceptors().removeIf(i -> true);
+        restTemplate.getInterceptors()
+                .add(new RestRetryInterceptor(endPoints, retryClientConfiguration));
 
-	assertThrows(RestClientException.class,
-		() -> restTemplate.postForObject(endpoint, requestEntity, String.class));
+        assertThrows(RestClientException.class,
+                () -> restTemplate.postForObject(endpoint, requestEntity, String.class));
     }
 
     private HttpEntity<MultiValueMap<String, Object>> buildValidRequestEntity() {
-	HttpHeaders headers = new HttpHeaders();
-	headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-	org.springframework.core.io.Resource resource = new ByteArrayResource(
-		"Ceci n'est pas un test".getBytes()) {
-	    @Override
-	    public String getFilename() {
-		return "requestTst";
-	    }
-	};
+        org.springframework.core.io.Resource resource = new ByteArrayResource(
+                "Ceci n'est pas un test".getBytes()) {
+            @Override
+            public String getFilename() {
+                return "requestTst";
+            }
+        };
 
-	MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-	body.add("description", "Richiesta TST");
-	body.add("file", resource);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("description", "Richiesta TST");
+        body.add("file", resource);
 
-	return new HttpEntity<>(body, headers);
+        return new HttpEntity<>(body, headers);
     }
 
     private HttpEntity<MultiValueMap<String, Object>> buildInvalidRequestEntity() {
-	HttpHeaders headers = new HttpHeaders();
-	headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-	org.springframework.core.io.Resource resource = new ByteArrayResource(
-		"Ceci n'est pas un test".getBytes()) {
-	    @Override
-	    public String getFilename() {
-		return "requestTst";
-	    }
-	};
+        org.springframework.core.io.Resource resource = new ByteArrayResource(
+                "Ceci n'est pas un test".getBytes()) {
+            @Override
+            public String getFilename() {
+                return "requestTst";
+            }
+        };
 
-	MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-	// Tolta la descrizione che è obbligatoria
-	body.add("file", resource);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        // Tolta la descrizione che è obbligatoria
+        body.add("file", resource);
 
-	return new HttpEntity<>(body, headers);
+        return new HttpEntity<>(body, headers);
     }
 
 }

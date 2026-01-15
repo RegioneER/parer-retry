@@ -47,11 +47,11 @@ public class ParerRetryConfigurationBuilder {
      * @return {@link ParerRetryConfigurationBuilder}
      */
     public ParerRetryConfigurationBuilder withTimeout(long timeout) {
-	TimeoutRetryPolicy policy = new TimeoutRetryPolicy();
-	policy.setTimeout(timeout);
-	this.policies.add(policy);
+        TimeoutRetryPolicy policy = new TimeoutRetryPolicy();
+        policy.setTimeout(timeout);
+        this.policies.add(policy);
 
-	return this;
+        return this;
     }
 
     /**
@@ -62,10 +62,10 @@ public class ParerRetryConfigurationBuilder {
      * @return {@link ParerRetryConfigurationBuilder}
      */
     public ParerRetryConfigurationBuilder withMaxAttemps(int maxAttemps) {
-	SimpleRetryPolicy policy = new SimpleRetryPolicy();
-	policy.setMaxAttempts(maxAttemps);
-	this.policies.add(policy);
-	return this;
+        SimpleRetryPolicy policy = new SimpleRetryPolicy();
+        policy.setMaxAttempts(maxAttemps);
+        this.policies.add(policy);
+        return this;
     }
 
     /**
@@ -76,10 +76,10 @@ public class ParerRetryConfigurationBuilder {
      * @return {@link ParerRetryConfigurationBuilder}
      */
     public ParerRetryConfigurationBuilder withBackoffPeriod(long backOffPeriod) {
-	FixedBackOffPolicy policy = new FixedBackOffPolicy();
-	policy.setBackOffPeriod(backOffPeriod);
-	this.backOffPolicy = policy;
-	return this;
+        FixedBackOffPolicy policy = new FixedBackOffPolicy();
+        policy.setBackOffPeriod(backOffPeriod);
+        this.backOffPolicy = policy;
+        return this;
     }
 
     /**
@@ -91,9 +91,9 @@ public class ParerRetryConfigurationBuilder {
      * @return {@link ParerRetryConfigurationBuilder}
      */
     public ParerRetryConfigurationBuilder withCircuitBreaker(long openTimeout, long resetTimeout) {
-	this.cbOpenTimeout = openTimeout;
-	this.cbResetTimeout = resetTimeout;
-	return this;
+        this.cbOpenTimeout = openTimeout;
+        this.cbResetTimeout = resetTimeout;
+        return this;
     }
 
     /**
@@ -105,8 +105,8 @@ public class ParerRetryConfigurationBuilder {
      * @return {@link ParerRetryConfigurationBuilder}
      */
     public ParerRetryConfigurationBuilder withOptimisticCompositePolicy(boolean compositePolicy) {
-	this.optimisticCompositePolicy = compositePolicy;
-	return this;
+        this.optimisticCompositePolicy = compositePolicy;
+        return this;
     }
 
     /**
@@ -116,33 +116,33 @@ public class ParerRetryConfigurationBuilder {
      */
     public ParerRetryConfiguration build() {
 
-	ParerRetryConfiguration restClient = new ParerRetryConfiguration();
-	RetryTemplate retryTemplate = new RetryTemplate();
+        ParerRetryConfiguration restClient = new ParerRetryConfiguration();
+        RetryTemplate retryTemplate = new RetryTemplate();
 
-	if (this.backOffPolicy != null) {
-	    retryTemplate.setBackOffPolicy(this.backOffPolicy);
-	}
+        if (this.backOffPolicy != null) {
+            retryTemplate.setBackOffPolicy(this.backOffPolicy);
+        }
 
-	// predefinito, 10 tentativi.
-	RetryPolicy policy = new SimpleRetryPolicy(DEFAULT_MAX_RETRY);
-	if (!policies.isEmpty()) {
-	    CompositeRetryPolicy compositePolicy = new CompositeRetryPolicy();
-	    compositePolicy.setPolicies(policies.toArray(new RetryPolicy[] {}));
-	    compositePolicy.setOptimistic(this.optimisticCompositePolicy);
+        // predefinito, 10 tentativi.
+        RetryPolicy policy = new SimpleRetryPolicy(DEFAULT_MAX_RETRY);
+        if (!policies.isEmpty()) {
+            CompositeRetryPolicy compositePolicy = new CompositeRetryPolicy();
+            compositePolicy.setPolicies(policies.toArray(new RetryPolicy[] {}));
+            compositePolicy.setOptimistic(this.optimisticCompositePolicy);
 
-	    policy = compositePolicy;
-	}
+            policy = compositePolicy;
+        }
 
-	if (cbOpenTimeout > 0 && cbResetTimeout > 0) {
-	    CircuitBreakerRetryPolicy circuitBreakerPolicy = new CircuitBreakerRetryPolicy(policy);
-	    circuitBreakerPolicy.setOpenTimeout(cbOpenTimeout);
-	    circuitBreakerPolicy.setResetTimeout(cbResetTimeout);
-	    policy = circuitBreakerPolicy;
-	}
-	retryTemplate.setRetryPolicy(policy);
+        if (cbOpenTimeout > 0 && cbResetTimeout > 0) {
+            CircuitBreakerRetryPolicy circuitBreakerPolicy = new CircuitBreakerRetryPolicy(policy);
+            circuitBreakerPolicy.setOpenTimeout(cbOpenTimeout);
+            circuitBreakerPolicy.setResetTimeout(cbResetTimeout);
+            policy = circuitBreakerPolicy;
+        }
+        retryTemplate.setRetryPolicy(policy);
 
-	restClient.setRetryTemplate(retryTemplate);
+        restClient.setRetryTemplate(retryTemplate);
 
-	return restClient;
+        return restClient;
     }
 }
